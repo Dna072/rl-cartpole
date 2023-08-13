@@ -20,8 +20,8 @@ parser.set_defaults(save_video=False)
 # Hyperparameter configurations for different environments. See config.py.
 ENV_CONFIGS = {
     'CartPole-v1': config.CartPole,
+    'ALE/Pong-v5': config.ALE_Pong_v5, 
 }
-
 
 def evaluate_policy(dqn, env, env_config, args, n_episodes, render=False, verbose=False):
     """Runs {n_episodes} episodes to evaluate current policy."""
@@ -41,6 +41,38 @@ def evaluate_policy(dqn, env, env_config, args, n_episodes, render=False, verbos
             obs, reward, terminated, truncated, info = env.step(action)
             obs = preprocess(obs, env=args.env).unsqueeze(0)
 
+            episode_return += reward
+        
+        total_return += episode_return
+        
+        if verbose:
+            print(f'Finished episode {i+1} with a total return of {episode_return}')
+
+    
+    return total_return / n_episodes
+
+def evaluate_policy_pong(dqn, env, env_config, args, 
+                         n_episodes, render=False, verbose=False,
+                         obs_stack_size=4):
+    """Runs {n_episodes} episodes to evaluate current policy."""
+    total_return = 0
+    for i in range(n_episodes):
+        obs, info = env.reset()
+        obs = preprocess(obs, env=args.env).unsqueeze(0)
+        obs_stack = torch.cat(obs_stack_size *[obs]).unsqueeze(0).to(device)
+
+        terminated = False
+        episode_return = 0
+
+        while not terminated:
+            if render:
+                env.render()
+
+            action = dqn.act(obs_stack, env, exploit=True).item()
+            obs, reward, terminated, truncated, info = env.step(action)
+            obs = preprocess(obs, env=args.env).unsqueeze(0)
+
+            obs_stack = torch.cat((obs_stack[:, 1:, ...], obs.unsqueeze(1)), dim=1).to(device)
             episode_return += reward
         
         total_return += episode_return

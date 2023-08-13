@@ -85,7 +85,65 @@ class DQN(nn.Module):
         else:
             return torch.tensor([[env.action_space.sample()]], device=device, dtype=torch.long)
 
-        
+class DCQN(nn.Module):
+    def __init__(self, env_config):
+        super(DCQN, self).__init__()
+
+        # Save hyperparameters needed in the DQN class.
+        self.batch_size = env_config["batch_size"]
+        self.gamma = env_config["gamma"]
+        self.eps_start = env_config["eps_start"]
+        self.eps_end = env_config["eps_end"]
+        self.anneal_length = env_config["anneal_length"]
+        self.n_actions = env_config["n_actions"]
+
+        self.anneal_step = 0
+
+        self.conv1 = nn.Conv2d(4, 32, kernel_size=8, stride=4, padding=0)
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=4, stride=2, padding=0)
+        self.conv3 = nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=0)
+        self.fc1 = nn.Linear(3136, 512)
+        self.fc2 = nn.Linear(512, self.n_actions)
+
+        ## Actions:
+        # RIGHT: 2
+        # LEFT:  3
+
+        self.relu = nn.ReLU()
+        self.flatten = nn.Flatten()
+
+    def forward(self, x):
+        """Runs the forward pass of the NN depending on architecture."""
+        x = self.relu(self.conv1(x))
+        x = self.relu(self.conv2(x))
+        x = self.relu(self.conv3(x))
+        x = self.relu(self.fc1(self.flatten(x)))
+        x = self.fc2(x)
+
+        return x
+
+    def act(self, observation, env, valid_actions=[2,3], exploit=False):
+        """Selects an action with an epsilon-greedy exploration strategy."""
+        # Implement action selection using the Deep Q-network. This function
+        #       takes an observation tensor and should return a tensor of actions.
+        #       For example, if the state dimension is 4 and the batch size is 32,
+        #       the input would be a [32, 4] tensor and the output a [32, 1] tensor.
+        # Implement epsilon-greedy exploration.
+        eps_threshold = self.eps_end + (self.eps_start - self.eps_end) * \
+        math.exp(-1 * self.anneal_step / self.anneal_length)
+
+        self.anneal_step += 1
+        sample = random.random()
+
+        if sample > eps_threshold:
+            with torch.no_grad():
+                # greedy mode
+                # t.max(1) will return the largest column value of each row.
+                # second column on max result is index of where max element was
+                # found, so we pick action with the larger expected reward.
+                return self(observation).max(1)[1].view(1, 1)
+        else:
+            return torch.tensor([[random.choice(valid_actions)]], device=device, dtype=torch.long)         
 
 def optimize(dqn, target_dqn, memory, optimizer, device):
     """This function samples a batch from the replay buffer and optimizes the Q-network."""
@@ -109,13 +167,14 @@ def optimize(dqn, target_dqn, memory, optimizer, device):
     reward_batch = torch.cat(batch.reward)
     action_batch = torch.cat(batch.action)
 
-    # TODO: Compute the current estimates of the Q-values for each state-action
+    #Compute the current estimates of the Q-values for each state-action
     #       pair (s,a). Here, torch.gather() is useful for selecting the Q-values
     #       corresponding to the chosen actions.
     q_values = dqn(state_batch).gather(1, action_batch)
+    
     next_state_values = torch.zeros(dqn.batch_size, device=device)
 
-    # TODO: Compute the Q-value targets. Only do this for non-terminal transitions!
+    # Compute the Q-value targets. Only do this for non-terminal transitions!
     with torch.no_grad():
         next_state_values[non_final_mask] = target_dqn(non_final_next_states).max(1)[0]
 

@@ -252,8 +252,9 @@ def train():
 def test_policy(env, max_steps=2000, render=True):
     from IPython.display import clear_output # Used to clear the ouput of a Jupyter cell.
 
-    policy_net.load_state_dict(torch.load('models/pytorch-eg-cartpole-policy.pt', 
-                                          map_location=torch.device('cpu')))
+    # policy_net.load_state_dict(torch.load('models/CartPole-v1_best.pt', 
+    #                                       map_location=torch.device('cpu')))
+    # policy_net = torch.load('models/CartPole-v1_best.pt')
     state, info = env.reset()
     step = 0
     total_reward = 0
