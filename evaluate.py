@@ -5,11 +5,12 @@ import torch
 
 import config
 from utils import preprocess
+from gymnasium.wrappers import atari_preprocessing as atp
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--env', choices=['CartPole-v1'], default='CartPole-v1')
+parser.add_argument('--env', choices=['CartPole-v1', 'ALE/Pong-v5'], default='CartPole-v1')
 parser.add_argument('--path', type=str, help='Path to stored DQN model.')
 parser.add_argument('--n_eval_episodes', type=int, default=1, help='Number of evaluation episodes.', nargs='?')
 parser.add_argument('--render', dest='render', action='store_true', help='Render the environment.')
@@ -94,11 +95,15 @@ if __name__ == '__main__':
         env = gym.make(args.env, render_mode='rgb_array')
         env = gym.wrappers.RecordVideo(env, './video/', episode_trigger=lambda episode_id: True)
 
+    if args.env == 'ALE/Pong-v5':
+        env = atp.AtariPreprocessing(env, screen_size=84, 
+                                 grayscale_obs=True, frame_skip=1,
+                                 noop_max=30, scale_obs=True)
     # Load model from provided path.
     dqn = torch.load(args.path, map_location=torch.device('cpu'))
     dqn.eval()
 
-    mean_return = evaluate_policy(dqn, env, env_config, args, args.n_eval_episodes, render=args.render and not args.save_video, verbose=True)
+    mean_return = evaluate_policy_pong(dqn, env, env_config, args, args.n_eval_episodes, render=args.render and not args.save_video, verbose=True)
     print(f'The policy got a mean return of {mean_return} over {args.n_eval_episodes} episodes.')
 
     env.close()

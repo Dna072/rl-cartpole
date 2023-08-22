@@ -42,7 +42,7 @@ ALE_Pong_v5 = {
     'gamma': 0.95,
     'lr': 1e-4,
     'eps_start': 1.0,
-    'eps_end': 0.05,
+    'eps_end': 0.1,
     'anneal_length': 10**4,
     'n_actions': 6,
     'tau': 0.02,

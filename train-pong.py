@@ -39,7 +39,7 @@ if __name__ == '__main__':
 
     # Initialize deep Q-networks.
     dqn = DCQN(env_config=env_config).to(device)
-    #dqn = torch.load(f'models/{args.env}_best.pt')
+    #dqn = torch.load(f'models/ALE_Pong-v5_best.pt', map_location=torch.device('cpu'))
 
     
     # TODO: Create and initialize target Q-network.
@@ -72,7 +72,10 @@ if __name__ == '__main__':
             action = dqn.act(obs_stack, env)
             #print('action', action)
             # Act in the true environment.
-            next_obs, reward, terminated, truncated, info = env.step(action.item())
+            action_item = action.item()
+            
+            next_obs, reward, terminated, truncated, info = env.step(action_item)
+            print('action', action_item, action.item(), 'reward', reward)
             reward = torch.tensor([reward], device=device)
             # Preprocess incoming observation.
             if not terminated:
@@ -106,7 +109,7 @@ if __name__ == '__main__':
                 best_mean_return = mean_return
 
                 print('Best performance so far! Saving model.')
-                torch.save(dqn, f'models/{args.env}_best.pt')
+                torch.save(dqn, f'models/ALE_Pong-v5_best_optimized_nn.pt')
     
     data = {
       'returns': returns,

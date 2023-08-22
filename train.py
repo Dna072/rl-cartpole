@@ -98,7 +98,7 @@ if __name__ == '__main__1':
                 best_mean_return = mean_return
 
                 print('Best performance so far! Saving model.')
-                torch.save(dqn, f'models/ALE_Pong-v5.pt')
+                torch.save(dqn, f'models/{args.env}_best.pt')
     
     data = {
       'returns': returns,

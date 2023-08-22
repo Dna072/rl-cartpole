@@ -123,6 +123,9 @@ class DCQN(nn.Module):
         return x
 
     def act(self, observation, env, valid_actions=[2,3], exploit=False):
+        ## Actions
+        # 0 - 2
+        # 1 - 3
         """Selects an action with an epsilon-greedy exploration strategy."""
         # Implement action selection using the Deep Q-network. This function
         #       takes an observation tensor and should return a tensor of actions.
@@ -135,7 +138,7 @@ class DCQN(nn.Module):
         self.anneal_step += 1
         sample = random.random()
 
-        if sample > eps_threshold:
+        if sample > eps_threshold or exploit == True:
             with torch.no_grad():
                 # greedy mode
                 # t.max(1) will return the largest column value of each row.
