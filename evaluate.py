@@ -92,7 +92,7 @@ if __name__ == '__main__':
     env_config = ENV_CONFIGS[args.env]
 
     if args.save_video:
-        env = gym.make(args.env, render_mode='rgb_array')
+        env = gym.make(args.env, render_mode='rgb_array', difficulty=3)
         env = gym.wrappers.RecordVideo(env, './video/', episode_trigger=lambda episode_id: True)
 
     if args.env == 'ALE/Pong-v5':
