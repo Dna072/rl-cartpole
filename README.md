@@ -1,8 +1,9 @@
 # rl-cartpole
 
+
 # Introduction
 
-In this report, we discuss the paper *Playing Atari with Deep
+In this project, we discuss the paper *Playing Atari with Deep
 Reinforcement Learning*[@mnih2013], implement the algorithm Deep
 Q-learning on the gymnasium environments *CartPole-v1* and
 *ALE\\Pong-v5*. In both cases we make use of algorithm described in the
@@ -54,7 +55,7 @@ connected layer has ReLU as the activation function.
 
 ## Plot of average returns during training for 1000 episodes
 
-![image](images/returns-episode-1.png){width="8cm"}
+![image](https://github.com/Dna072/rl-cartpole/blob/main/plots/returns-episode-1.png?raw=true){width="8cm"}
 
 ## Discussion
 
@@ -196,22 +197,22 @@ epoch with the last saved DQN model.
 
 ## Plots
 
-![image](images/pong-dqcn-returns-episode-11.png){width="\\textwidth"}
+![image](https://github.com/Dna072/rl-cartpole/blob/main/plots/pong/pong-dqcn-returns-episode-11.png?raw=true){width="\\textwidth"}
 
-![image](images/pong-dqcn-returns-episode-0.png){width="1\\linewidth"}
+![image](https://github.com/Dna072/rl-cartpole/blob/main/plots/pong/pong-dqcn-returns-episode-0.png?raw=true){width="1\\linewidth"}
 
-![image](images/pong-dqcn-returns-episode-1.png){width="\\textwidth"}
+![image](https://github.com/Dna072/rl-cartpole/blob/main/plots/pong/pong-dqcn-returns-episode-1.png?raw=true){width="\\textwidth"}
 
 At some point we had issues with Google Colab, so the data was not well
 gathered for epochs 4 and 5, but our model was updated during these
 epoch. Thus we continue with plots for epoch 6 - 10. The extra epochs we
 realised were not very necessary to train the network.
 
-![image](images/pong-dqcn-returns-episode-4.png){width="\\textwidth"}
+![image](https://github.com/Dna072/rl-cartpole/blob/main/plots/pong/pong-dqcn-returns-episode-4.png?raw=true){width="\\textwidth"}
 
-![image](images/pong-dqcn-returns-episode-5.png){width="1\\linewidth"}
+![image](https://github.com/Dna072/rl-cartpole/blob/main/plots/pong/pong-dqcn-returns-episode-5.png?raw=true){width="1\\linewidth"}
 
-![image](images/pong-dqcn-returns-episode-6.png){width="\\textwidth"}
+![image](https://github.com/Dna072/rl-cartpole/blob/main/plots/pong/pong-dqcn-returns-episode-6.png?raw=true){width="\\textwidth"}
 
 ## Evaluating the network
 
@@ -243,5 +244,4 @@ M. Riedmiller, “Playing atari with deep reinforcement learning,” Computing i
 
 [2] R. S. Sutton and A. G. Barto, Reinforcement Learning: An Introduction. MIT Press,
 2018.
-
 
