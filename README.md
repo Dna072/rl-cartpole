@@ -1,4 +1,4 @@
-# rl-cartpole
+# rl-cartpole and Pong
 
 ![image](https://miro.medium.com/v2/resize:fit:704/1*hHXVW-Unl96OHJOZ1J_4ig.gif)
 
